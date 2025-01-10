@@ -1,0 +1,73 @@
+﻿@model PagedList.IPagedList<CodeTentaclesTaks.Models.tblProduct>
+
+@using PagedList.Mvc;
+
+@{
+    ViewBag.Title = "ProductList";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>ProductList</h2>
+
+<p>
+    @Html.ActionLink("Create New", "AddProduct")
+</p>
+@using (Html.BeginForm("ProductList", "Product", FormMethod.Get))
+{
+    <p>
+        Search Name: @Html.TextBox("Search_Data", ViewBag.FilterValue as string)
+        <input type="submit" value="Find" />
+    </p>
+}
+
+<br />
+<h6 class="text-danger">Click on the Column Header to Sort by Product Name or Price</h6>
+<br />
+<table class="table">
+    <tr>
+        <th>
+            @Html.ActionLink("Product Name", "ProductList",
+            new { sortOrder = "Name", CurrentSort = ViewBag.CurrentSort })
+        </th>
+        <th>
+            @Html.ActionLink("Amount", "ProductList",
+            new { sortOrder = "Amount", CurrentSort = ViewBag.CurrentSort })
+        </th>
+        <th>
+            @Html.DisplayName("Description")
+        </th>
+        <th>
+            @Html.DisplayName("Image")
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Amount)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Description)
+            </td>
+            <td>
+                <img src="~/Content/Images/@item.Image" height="100px" width="100px" />
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "EditProduct", new { id = item.ProductId })
+
+            </td>
+        </tr>
+    }
+
+</table>
+<br />
+
+<div id="Paging" class="text-center">
+    <p>Page @(Model.PageNumber) of @Model.PageCount</p>
+    @Html.PagedListPager(Model, page => Url.Action("ProductList", new { page, Filter_Value = ViewBag.FilterValue }))
+</div>
